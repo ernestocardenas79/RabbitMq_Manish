@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MicroRabbit.Infra.Bus
@@ -35,8 +34,8 @@ namespace MicroRabbit.Infra.Bus
         public void Publish<T>(T @event) where T : Event
         {
             var factory = new ConnectionFactory() { HostName = "localhost" };
-            using(var connection = factory.CreateConnection())
-                using(var channel = connection.CreateModel())
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
             {
                 var eventName = @event.GetType().Name;
                 channel.QueueDeclare(eventName, false, false, false, null);
@@ -44,7 +43,7 @@ namespace MicroRabbit.Infra.Bus
                 var message = JsonConvert.SerializeObject(@event);
                 var body = Encoding.UTF8.GetBytes(message);
 
-                channel.BasicPublish("",eventName,null,body);
+                channel.BasicPublish("", eventName, null, body);
             }
         }
 
@@ -65,7 +64,8 @@ namespace MicroRabbit.Infra.Bus
                 handlers.Add(eventName, new List<Type>());
             }
 
-            if (handlers[eventName].Any(s=> s.GetType().Name == handlerType.Name)) {
+            if (handlers[eventName].Any(s => s.GetType().Name == handlerType.Name))
+            {
                 throw new ArgumentException($"Handler Type {handlerType.Name} already is registred for '{eventName}'", nameof(handlerType));
             }
 
@@ -76,10 +76,10 @@ namespace MicroRabbit.Infra.Bus
 
         private void StartBasicConsume<T>() where T : Event
         {
-            var factory = new ConnectionFactory() 
-            { 
-                HostName = "localhost", 
-                DispatchConsumersAsync= true 
+            var factory = new ConnectionFactory()
+            {
+                HostName = "localhost",
+                DispatchConsumersAsync = true
             };
 
             var connection = factory.CreateConnection();
@@ -108,10 +108,10 @@ namespace MicroRabbit.Infra.Bus
             catch (Exception)
             {
 
-                
+
             }
         }
-        
+
 
         private async Task ProcessEvent(string eventName, string message)
         {
