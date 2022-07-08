@@ -120,21 +120,21 @@ namespace MicroRabbit.Infra.Bus
         {
             if (handlers.ContainsKey(eventName))
             {
-                using(var scope = serviceScopeFactory.CreateScope())
+                using (var scope = serviceScopeFactory.CreateScope())
                 {
-                var subscriptions = handlers[eventName];
-                foreach (var subscription in subscriptions)
-                {
-                    var handler = scope.ServiceProvider.GetService(subscription);
+                    var subscriptions = handlers[eventName];
+                    foreach (var subscription in subscriptions)
+                    {
+                        var handler = scope.ServiceProvider.GetService(subscription);
 
-                    if (handler == null) continue;
+                        if (handler == null) continue;
 
-                    var evenType = eventTypes.SingleOrDefault(t => t.Name == eventName);
+                        var evenType = eventTypes.SingleOrDefault(t => t.Name == eventName);
 
-                    var @event = JsonConvert.DeserializeObject(message, evenType);
-                    var concreteType = typeof(IEventHandler<>).MakeGenericType(evenType);
-                    await (Task)concreteType.GetMethod("Handle").Invoke(handler, new Object[] { @event });
-                }
+                        var @event = JsonConvert.DeserializeObject(message, evenType);
+                        var concreteType = typeof(IEventHandler<>).MakeGenericType(evenType);
+                        await (Task)concreteType.GetMethod("Handle").Invoke(handler, new Object[] { @event });
+                    }
 
                 }
             }

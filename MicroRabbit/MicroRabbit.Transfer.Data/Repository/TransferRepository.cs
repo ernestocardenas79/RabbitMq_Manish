@@ -24,6 +24,5 @@ namespace MicroRabbit.Transfer.Data.Repository
         {
             return ctx.TransferLogs;
         }
-
     }
 }

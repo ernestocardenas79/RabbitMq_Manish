@@ -17,8 +17,8 @@ namespace MicroRabbit.Transfer.Domain.EventTransfers
 
         public Task Handle(TransferCreatedEvent @event)
         {
-            transferRepository.Add(new TransferLog() 
-            { 
+            transferRepository.Add(new TransferLog()
+            {
                 FromAccount = @event.From,
                 ToAccount = @event.To,
                 TransferAmount = @event.Amount

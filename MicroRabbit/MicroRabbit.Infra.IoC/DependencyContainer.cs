@@ -24,7 +24,8 @@ namespace MicroRabbit.Infra.IoC
         public static void RegiterServices(IServiceCollection services)
         {
             //Domain Bus
-            services.AddSingleton<IEventBus, RabbitMqBus>(sp=> {
+            services.AddSingleton<IEventBus, RabbitMqBus>(sp =>
+            {
                 var scopeFactory = sp.GetRequiredService<IServiceScopeFactory>();
                 return new RabbitMqBus(sp.GetService<IMediator>(), scopeFactory);
             });
